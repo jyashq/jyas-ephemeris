@@ -83,6 +83,11 @@ Standard ephemeris-library expectations, and their status here:
   Jupiter 1.07″. Residual = VSOP87's DE200 fit vs DE440 plus the
   documented truncation budgets - far inside every boundary the consumer
   computes (a nakshatra pada is 200″).
+- Moon (Meeus ch. 47 abridged ELP-2000/82): **MEASURED 2026-08-27 against
+  DE440s, 168 samples over 1900-2100**: worst apparent-longitude error
+  10.67″ - the published accuracy class of the abridgment, inside target.
+  True node (osculating, analytic-derivative method): worst 0.47′ vs the
+  incumbent engine's osculating node; mean node matches to ±0.3′.
 - Tier 2 (JPL DE440s when installed): ~mas-class positions; also the
   validation reference for Tier 1 acceptance.
 - ΔT: Espenak–Meeus polynomials (±~1 s over 1900–2150; 1 s ≈ 0.5″ of Moon

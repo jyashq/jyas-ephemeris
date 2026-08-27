@@ -40,7 +40,7 @@ __all__ = [
     "apparent_speed_longitude_deg_per_day",
 ]
 
-BODIES = ("sun", "mercury", "venus", "earth", "mars", "jupiter", "saturn")
+BODIES = ("sun", "moon", "mercury", "venus", "earth", "mars", "jupiter", "saturn")
 _FILE_FOR = {
     "mercury": "vsop87d_mer.json",
     "venus": "vsop87d_ven.json",
@@ -180,6 +180,18 @@ def geocentric_apparent(
         jde = julian_ephemeris_day(jd_ut)
     else:
         jde = jde_tt
+
+    if body == "moon":
+        from .moon import apparent_moon
+
+        m = apparent_moon(jde_tt=jde)
+        return ApparentPlace(
+            body="moon",
+            longitude_deg=m["longitude_deg"],
+            latitude_deg=m["latitude_deg"],
+            distance_au=m["distance_au"],
+            light_time_days=m["light_time_days"],
+        )
     h = 0.1  # days; central difference for Earth's barycentric-ish velocity
     e0 = _vec("earth", jde - h)
     e1 = _vec("earth", jde + h)

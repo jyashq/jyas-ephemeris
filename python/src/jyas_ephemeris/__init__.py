@@ -31,8 +31,14 @@ from .positions import (
     geocentric_apparent,
     heliocentric_spherical_rad,
 )
+from .moon import (
+    apparent_moon,
+    geometric_ecliptic_deg,
+    mean_node_deg,
+    true_node_deg,
+)
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 __all__ = [
     "__version__",
@@ -51,6 +57,10 @@ __all__ = [
     "geocentric_apparent",
     "apparent_longitude_deg",
     "apparent_speed_longitude_deg_per_day",
+    "apparent_moon",
+    "geometric_ecliptic_deg",
+    "mean_node_deg",
+    "true_node_deg",
     "find_kernel",
     "kernel_search_paths",
     "DEFAULT_KERNEL_NAME",
