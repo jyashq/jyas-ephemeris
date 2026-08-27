@@ -37,8 +37,14 @@ from .moon import (
     mean_node_deg,
     true_node_deg,
 )
+from .ayanamsa import (
+    SYSTEMS,
+    ayanamsa_deg,
+    sidereal_longitude_deg,
+    spica_longitude_deg,
+)
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 __all__ = [
     "__version__",
@@ -61,6 +67,10 @@ __all__ = [
     "geometric_ecliptic_deg",
     "mean_node_deg",
     "true_node_deg",
+    "SYSTEMS",
+    "ayanamsa_deg",
+    "sidereal_longitude_deg",
+    "spica_longitude_deg",
     "find_kernel",
     "kernel_search_paths",
     "DEFAULT_KERNEL_NAME",

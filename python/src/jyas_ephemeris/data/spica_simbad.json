@@ -1,0 +1,13 @@
+{
+  "provenance": {
+    "source": "SIMBAD query 'alpha Vir' (Spica), retrieved 2026-08-27",
+    "reference": "2007A&A...474..653V (van Leeuwen, Hipparcos, the new reduction)",
+    "note": "ICRS J2000 astrometry used for the True Citra ayanamsa: Spica at exactly 180 deg sidereal."
+  },
+  "ra_deg": 201.29824737,
+  "dec_deg": -11.16131947,
+  "pmra_masyr": -42.35,
+  "pmdec_masyr": -30.67,
+  "parallax_mas": 13.06,
+  "radial_velocity_kms": -3.31
+}

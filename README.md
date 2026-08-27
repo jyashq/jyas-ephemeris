@@ -44,8 +44,8 @@ personal-information checks.
 | Sidereal time, obliquity, nutation | **0.1.0** |
 | Sun + Mercury–Saturn apparent positions (VSOP87D) | **0.1.0** |
 | Moon + lunar nodes (Meeus abridged ELP-2000/82) | **0.2.0** |
+| Ayanamsa conversions (7 systems, Lahiri default) | **0.3.0** |
 | Optional JPL kernel tier (DE440s fetch + discovery) | **0.1.0** (discovery + fetch helper) |
-| Ayanamsa conversions (7 systems, Lahiri default) | planned |
 | Panchanga elements (tithi, nakshatra, yoga, karana) | planned |
 | Dasha period arithmetic | planned |
 | Placidus houses, sunrise/sunset | planned |

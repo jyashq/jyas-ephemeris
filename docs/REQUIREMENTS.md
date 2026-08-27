@@ -88,6 +88,13 @@ Standard ephemeris-library expectations, and their status here:
   10.67″ - the published accuracy class of the abridgment, inside target.
   True node (osculating, analytic-derivative method): worst 0.47′ vs the
   incumbent engine's osculating node; mean node matches to ±0.3′.
+- Ayanamsa (all seven consumer systems): **MEASURED 2026-08-27 against the
+  incumbent engine's ayanamsa implementation, 1900-2100 decade sweep**:
+  worst error ≤17.8″ for the six constant-anchored systems (Lahiri,
+  Fagan/Bradley, Raman, Krishnamurti, Yukteshwar, SS Citra — residual =
+  the incumbent's per-system historical precession models vs our uniform
+  IAU 2006), and **0.55″ worst / 1.8″ fine for True Citra** (star-computed
+  Spica, Simbad astrometry, ERFA-construction IAU 2006 matrix).
 - Tier 2 (JPL DE440s when installed): ~mas-class positions; also the
   validation reference for Tier 1 acceptance.
 - ΔT: Espenak–Meeus polynomials (±~1 s over 1900–2150; 1 s ≈ 0.5″ of Moon
