@@ -1,0 +1,14 @@
+jyas-ephemeris
+Copyright 2026 Avikalpa Kundu <avi@gour.top>
+
+Licensed under the Apache License, Version 2.0.
+
+This is an independent implementation. It does not include, link, vendor, or
+depend on Swiss Ephemeris source code or Swiss Ephemeris data files, which are
+dual-licensed by Astrodienst under AGPL-3.0 or the Swiss Ephemeris Professional
+License. Keeping this repository free of that code is what allows the more
+permissive Apache-2.0 grant, so the boundary is enforced, not just declared:
+see `tools/check-privacy.sh`.
+
+Bundled third-party code, if any is ever added, must be listed in this NOTICE
+and THIRD-PARTY-NOTICES.md before it lands.
