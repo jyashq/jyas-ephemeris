@@ -25,10 +25,12 @@ jobs:
           chmod +x tools/check-privacy.sh
           tools/check-privacy.sh
 
-      - name: Install package
+      - name: Install prototype package
+        working-directory: python
         run: |
           python3 -m pip install --upgrade pip
           python3 -m pip install -e . pytest
 
-      - name: Smoke tests
+      - name: Prototype tests
+        working-directory: python
         run: python3 -m pytest tests/ -q

@@ -62,10 +62,21 @@ Usage documentation lands with the first computation release.
 
 ## Development
 
+The Python prototype lives under `python/`; it is the reference
+implementation whose behaviour the future Rust core must reproduce
+(`docs/ARCHITECTURE.md`).
+
 ```sh
+cd python
 python3 -m pip install -e . pytest
 python3 -m pytest tests/ -q
-tools/check-privacy.sh        # run before every commit
+../tools/check-privacy.sh     # run before every commit
+```
+
+Optional JPL kernel for the validation tier:
+
+```sh
+tools/fetch-kernels.py        # DE440s into the cache dir, md5-verified
 ```
 
 ## Contributing

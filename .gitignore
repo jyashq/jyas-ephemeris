@@ -7,6 +7,9 @@ dist/
 .venv/
 venv/
 
+# Rust (production layer, future)
+/target/
+
 # Tooling
 .pytest_cache/
 .mypy_cache/

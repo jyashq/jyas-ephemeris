@@ -2,19 +2,26 @@
 
 ## Shape
 
-A pure-Python, dependency-free computation core with an optional,
-explicitly-isolated JPL kernel tier.
+A pure-Python **prototype layer** (the reference implementation, under
+`python/`) and a Rust **production layer** (under `crates/`, owner-decided
+2026-08-27), kept in agreement by frozen golden vectors.
 
 ```
-timecore        JD/calendar, UTC→TT (ΔT), GREG_CAL round-trips
-earth           GMST/apparent sidereal time, obliquity (mean/true),
-                nutation (truncated lunisolar), future: full IAU table
-positions/      VSOP87D-truncated Sun+planets, ELP-derived Moon, nodes
-ayanamsa        precession model + the seven consumer ayanamsa systems
-houses          Placidus (iterative semi-arc), then trivial systems
-events          rise/set (refraction model), tithi/nakshatra root-finding
-kernels         optional DE440s discovery/loading (jplephem extra)
+python/                 reference implementation (stdlib-only, validated)
+  src/jyas_ephemeris/   timecore, earth, positions, ayanamsa, houses,
+                        events, kernels
+  tests/                published-reference anchors
+  golden/               frozen truth vectors (synthetic timestamps only)
+crates/                 production Rust core (later increments)
+  jyas-ephem-core/      pure computation, no IO, series compiled in
+  jyas-ephem-server/    MCP-over-stdio first, REST later; same core
+docs/  tools/           requirements/architecture + fetch helpers
 ```
+
+The consumer-facing swap seam is the jyas adapter
+(`jyas:lib/swisseph_adapter.py`): its public functions keep their shape
+while the internals move from the encumbered engine to this library, after
+which the AGPL dependency leaves the jyas runtime entirely.
 
 Every module states the published algorithm it implements in its docstring
 and every numerical claim in tests cites a printed reference value with an
