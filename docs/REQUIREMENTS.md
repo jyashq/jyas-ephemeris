@@ -110,6 +110,13 @@ Standard ephemeris-library expectations, and their status here:
 - Nutation: IAU 1980 series, 20 of 106 terms (< 0.01″ residual), full
   table drops in behind the same signature.
 
+## Consumed — 2026-08-28
+
+The jyas runtime swapped to this library (adapter rewrite + all direct
+engine call sites); pyswisseph is uninstalled from the jyas venv and
+the AGPL dependency has left the jyas stack. Pre-retirement parity was
+measured and recorded (jyas tools/ephemeris_parity_report.json).
+
 ## Explicitly out of scope until asked
 
 - Julian-calendar dates, heliocentric outputs, topocentric parallax
