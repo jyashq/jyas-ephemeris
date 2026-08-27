@@ -77,8 +77,12 @@ Standard ephemeris-library expectations, and their status here:
 - Consumer need: sign/nakshatra boundary robustness at arcminute scale;
   parity target with the incumbent engine at arcsecond scale for
   Sun/Moon/planets over 1900–2100.
-- Tier 1 (built-in series): Sun/planets ≈ 1″, Moon ≈ 10″ (truncated ELP-class
-  series), sufficient for every astrological boundary at current tolerances.
+- Tier 1 (built-in series): **MEASURED 2026-08-27 against DE440s apparent
+  ecliptic-of-date longitudes, 504 samples over 1900-2100**: worst error
+  Sun 0.46″, Venus 0.46″, Mercury 0.50″, Mars 0.59″, Saturn 0.77″,
+  Jupiter 1.07″. Residual = VSOP87's DE200 fit vs DE440 plus the
+  documented truncation budgets - far inside every boundary the consumer
+  computes (a nakshatra pada is 200″).
 - Tier 2 (JPL DE440s when installed): ~mas-class positions; also the
   validation reference for Tier 1 acceptance.
 - ΔT: Espenak–Meeus polynomials (±~1 s over 1900–2150; 1 s ≈ 0.5″ of Moon

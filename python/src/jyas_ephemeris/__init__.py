@@ -24,6 +24,13 @@ from .earth import (
     true_obliquity_deg,
 )
 from .kernels import DEFAULT_KERNEL_NAME, find_kernel, kernel_search_paths
+from .positions import (
+    BODIES,
+    apparent_speed_longitude_deg_per_day,
+    apparent_longitude_deg,
+    geocentric_apparent,
+    heliocentric_spherical_rad,
+)
 
 __version__ = "0.1.0"
 
@@ -39,6 +46,11 @@ __all__ = [
     "true_obliquity_deg",
     "mean_sidereal_time_deg",
     "apparent_sidereal_time_deg",
+    "BODIES",
+    "heliocentric_spherical_rad",
+    "geocentric_apparent",
+    "apparent_longitude_deg",
+    "apparent_speed_longitude_deg_per_day",
     "find_kernel",
     "kernel_search_paths",
     "DEFAULT_KERNEL_NAME",

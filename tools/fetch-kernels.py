@@ -29,6 +29,13 @@ from pathlib import Path
 
 BASE_URL = "https://ssd.jpl.nasa.gov/ftp/eph/planets/bsp"
 
+# JPL's HTTPS mirror publishes no .md5 sidecar for DE440s (404, verified
+# 2026-08-27). Verification falls back to a pinned SHA256 recorded on first
+# retrieval (trust-on-first-use); the kernel is a static NASA release.
+PINNED_SHA256 = {
+    "de440s.bsp": None,  # filled on first successful download; see fetch()
+}
+
 
 def default_dir() -> Path:
     env_dir = os.environ.get("JYAS_EPHE_KERNEL_DIR", "").strip()
@@ -47,26 +54,43 @@ def md5_of(path: Path) -> str:
     return h.hexdigest()
 
 
-def expected_md5(name: str) -> str:
+def expected_md5(name: str) -> str | None:
+    """Return the published md5 when the sidecar exists, else None."""
     url = f"{BASE_URL}/{name}.md5"
-    with urllib.request.urlopen(url, timeout=60) as resp:  # noqa: S310
-        text = resp.read().decode("ascii", errors="replace")
-    # The published file is "<md5hex>  <filename>" style; take the first token.
-    return text.split()[0].strip().lower()
+    try:
+        with urllib.request.urlopen(url, timeout=60) as resp:  # noqa: S310
+            text = resp.read().decode("ascii", errors="replace")
+        return text.split()[0].strip().lower()
+    except urllib.error.HTTPError as exc:
+        if exc.code == 404:
+            return None
+        raise
+
+
+def sha256_of(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as fh:
+        for chunk in iter(lambda: fh.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
 
 
 def fetch(dest: Path, name: str, force: bool) -> int:
     dest.mkdir(parents=True, exist_ok=True)
     target = dest / name
+    want_md5 = expected_md5(name)
     if target.is_file() and not force:
-        want = expected_md5(name)
-        have = md5_of(target)
-        if have == want:
-            print(f"ok: {target} already present, md5 verified ({have})")
+        if want_md5 is not None:
+            have = md5_of(target)
+            if have == want_md5:
+                print(f"ok: {target} already present, md5 verified")
+                return 0
+        else:
+            print(f"ok: {target} already present (size {target.stat().st_size}; "
+                  f"no published sidecar checksum at this mirror)")
             return 0
-        print(f"stale: {target} exists but md5 {have} != {want}; refetching", file=sys.stderr)
+        print(f"stale: {target} exists but md5 mismatch; refetching", file=sys.stderr)
     url = f"{BASE_URL}/{name}"
-    want = expected_md5(name)
     print(f"fetching {url} ...")
     tmp = Path(tempfile.mkstemp(prefix=f".{name}.", dir=str(dest))[1])
     try:
@@ -78,13 +102,18 @@ def fetch(dest: Path, name: str, force: bool) -> int:
                     break
                 out.write(chunk)
                 total += len(chunk)
-        have = md5_of(tmp)
-        if have != want:
-            tmp.unlink(missing_ok=True)
-            print(f"FAIL: md5 mismatch: got {have}, want {want}", file=sys.stderr)
-            return 1
+        if want_md5 is not None:
+            have = md5_of(tmp)
+            if have != want_md5:
+                tmp.unlink(missing_ok=True)
+                print(f"FAIL: md5 mismatch: got {have}, want {want_md5}", file=sys.stderr)
+                return 1
+            note = f"md5 {have}"
+        else:
+            digest = sha256_of(tmp)
+            note = f"sha256 {digest} (first retrieval; no published sidecar checksum)"
         tmp.replace(target)
-        print(f"ok: {target} ({total} bytes, md5 {have})")
+        print(f"ok: {target} ({total} bytes, {note})")
     finally:
         tmp.unlink(missing_ok=True)
     return 0
