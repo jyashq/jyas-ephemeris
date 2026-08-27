@@ -43,8 +43,18 @@ from .ayanamsa import (
     sidereal_longitude_deg,
     spica_longitude_deg,
 )
+from .houses import houses, houses_armc
+from .riseset import sun_rise_set, sun_transit, sun_altitude
+from .panchanga import (
+    find_crossing,
+    tithi_info,
+    nakshatra_info,
+    yoga_info,
+    vimshottari_balance,
+    vimshottari_mahadashas,
+)
 
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 
 __all__ = [
     "__version__",
@@ -71,6 +81,17 @@ __all__ = [
     "ayanamsa_deg",
     "sidereal_longitude_deg",
     "spica_longitude_deg",
+    "houses",
+    "houses_armc",
+    "sun_rise_set",
+    "sun_transit",
+    "sun_altitude",
+    "find_crossing",
+    "tithi_info",
+    "nakshatra_info",
+    "yoga_info",
+    "vimshottari_balance",
+    "vimshottari_mahadashas",
     "find_kernel",
     "kernel_search_paths",
     "DEFAULT_KERNEL_NAME",

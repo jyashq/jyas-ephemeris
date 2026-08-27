@@ -95,6 +95,14 @@ Standard ephemeris-library expectations, and their status here:
   the incumbent's per-system historical precession models vs our uniform
   IAU 2006), and **0.55″ worst / 1.8″ fine for True Citra** (star-computed
   Spica, Simbad astrometry, ERFA-construction IAU 2006 matrix).
+- Houses (Placidus sidereal, 5 dates × 5 sites vs the incumbent): worst
+  16.7″ — entirely the ayanamsa layer above; the house geometry itself
+  agrees to ≤0.06″ tropical. Rise/set: worst 10.4 s over 36 aligned cases
+  including ±64° polar-edge sites (residual = the incumbent's fine
+  threshold structure; its effective h0 measured at -0.874 deg, which is
+  our default). Tithi ends: 2-9 s near-term, ~105 s at the 2100 edge
+  (Moon-truncation scale); Vimshottari layout is exact integer
+  arithmetic.
 - Tier 2 (JPL DE440s when installed): ~mas-class positions; also the
   validation reference for Tier 1 acceptance.
 - ΔT: Espenak–Meeus polynomials (±~1 s over 1900–2150; 1 s ≈ 0.5″ of Moon

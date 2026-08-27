@@ -45,10 +45,13 @@ personal-information checks.
 | Sun + Mercury–Saturn apparent positions (VSOP87D) | **0.1.0** |
 | Moon + lunar nodes (Meeus abridged ELP-2000/82) | **0.2.0** |
 | Ayanamsa conversions (7 systems, Lahiri default) | **0.3.0** |
+| Placidus (+equal/whole-sign) houses | **0.4.0** |
+| Sunrise/sunset (+transit) | **0.4.0** |
+| Panchanga boundaries + Vimshottari reference layout | **0.4.0** |
+| Golden vectors (Rust acceptance contract) | **0.4.0** |
+| MCP stdio server (prototype) | **0.4.0** |
 | Optional JPL kernel tier (DE440s fetch + discovery) | **0.1.0** (discovery + fetch helper) |
-| Panchanga elements (tithi, nakshatra, yoga, karana) | planned |
-| Dasha period arithmetic | planned |
-| Placidus houses, sunrise/sunset | planned |
+| Dasha period engine above the astronomy layer | consumer-side (jyas) |
 
 ## Installation
 
