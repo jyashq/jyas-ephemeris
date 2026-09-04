@@ -46,6 +46,8 @@ personal-information checks.
 | Moon + lunar nodes (Meeus abridged ELP-2000/82) | **0.2.0** |
 | Ayanamsa conversions (7 systems, Lahiri default) | **0.3.0** |
 | Placidus (+equal/whole-sign) houses | **0.4.0** |
+| Quadrant circle houses (Porphyry, Regiomontanus, Campanus, Morinus) | lane |
+| Aspect enumeration over longitudes (major + minor families) | lane |
 | Sunrise/sunset (+transit) | **0.4.0** |
 | Panchanga boundaries + Vimshottari reference layout | **0.4.0** |
 | Golden vectors (Rust acceptance contract) | **0.4.0** |

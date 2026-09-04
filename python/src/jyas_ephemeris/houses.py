@@ -1,5 +1,6 @@
-"""House cusps: Placidus (iterative semi-arc) with the standard quadrant
-machinery, plus the trivial systems the consumer may select.
+"""House cusps: Placidus (iterative semi-arc), the quadrant circle systems
+(Porphyry, Regiomontanus, Campanus, Morinus) derived from their classical
+constructions, plus the trivial systems the consumer may select.
 
 References: the classical Placidus construction — cusps 11, 12 trisect the
 diurnal semi-arc from MC to Asc, cusps 2, 3 trisect the nocturnal arc, each
@@ -72,6 +73,109 @@ def _asc1(x1: float, f: float, sine: float, cose: float) -> float:
     return ass
 
 
+
+def _equatorial_vector(ra_deg: float, dec_deg: float) -> tuple[float, float, float]:
+    ra = math.radians(ra_deg)
+    dec = math.radians(dec_deg)
+    return (
+        math.cos(dec) * math.cos(ra),
+        math.cos(dec) * math.sin(ra),
+        math.sin(dec),
+    )
+
+
+def _cross(a, b):
+    return (
+        a[1] * b[2] - a[2] * b[1],
+        a[2] * b[0] - a[0] * b[2],
+        a[0] * b[1] - a[1] * b[0],
+    )
+
+
+def _ecliptic_point_on_plane(
+    normal, obliquity_deg: float, lo_deg: float, hi_deg: float
+) -> float:
+    """Ecliptic longitude in (lo, hi] zodiacally where the ecliptic meets the
+    great circle with the given equatorial-frame unit normal.
+
+    The intersection solves normal . v(lambda) = 0 with
+    v(lambda) = (cos l, sin l cos e, sin l sin e); two solutions 180 deg
+    apart, resolved by the expected zodiacal quadrant.
+    """
+    a = normal[0]
+    b = normal[1] * math.cos(math.radians(obliquity_deg)) + normal[2] * math.sin(
+        math.radians(obliquity_deg)
+    )
+    lam = math.degrees(math.atan2(-a, b)) % 360.0
+    for cand in (lam, (lam + 180.0) % 360.0):
+        if (cand - lo_deg) % 360.0 <= (hi_deg - lo_deg) % 360.0:
+            return cand
+    # rounding at a boundary: snap to the nearer edge
+    return lam
+
+
+def _horizon_north_point(armc_deg: float, lat_deg: float):
+    """Unit vector of the horizon's north point (alt 0, az due north).
+
+    Dec = 90 - |lat|, RA = RAMC + 180 (the point is 12h from culmination);
+    derived from the horizon-meridian intersection, not assumed.
+    """
+    return _equatorial_vector((armc_deg + 180.0) % 360.0, 90.0 - abs(lat_deg))
+
+
+def _regiomontanus_normal(armc_deg: float, lat_deg: float, d_deg: float):
+    """Circle through the horizon N/S points crossing the equator at D."""
+    north = _horizon_north_point(armc_deg, lat_deg)
+    q = _equatorial_vector(d_deg, 0.0)
+    return _cross(north, q)
+
+
+def _campanus_normal(armc_deg: float, lat_deg: float, t_deg: float):
+    """Circle through the horizon N/S points meeting the prime vertical t
+    degrees from the zenith (toward east for positive t)."""
+    north = _horizon_north_point(armc_deg, lat_deg)
+    zenith = _equatorial_vector(armc_deg, lat_deg)
+    east = _equatorial_vector((armc_deg + 90.0) % 360.0, 0.0)
+    t = math.radians(t_deg)
+    q = (
+        math.cos(t) * zenith[0] + math.sin(t) * east[0],
+        math.cos(t) * zenith[1] + math.sin(t) * east[1],
+        math.cos(t) * zenith[2] + math.sin(t) * east[2],
+    )
+    return _cross(north, q)
+
+
+def _circle_system_cusps(
+    armc_deg: float,
+    lat_deg: float,
+    obliquity_deg: float,
+    mc: float,
+    asc: float,
+    system: str,
+) -> tuple[float, float, float, float]:
+    """Cusps 11, 12, 2, 3 for Regiomontanus ('R') / Campanus ('C').
+
+    Each house circle meets the ecliptic twice; the cusp is the branch in
+    its zodiacal quadrant (11 in (MC, Asc), 12 in (C11, Asc), 2 in
+    (Asc, IC), 3 in (C2, IC)).
+    """
+    ic = (mc + 180.0) % 360.0
+    cusps = {}
+    for k, (lo, hi) in ((11, (mc, asc)), (12, (None, asc)), (2, (asc, ic)), (3, (None, ic))):
+        # equator-crossing / prime-vertical parameter: cusp 11 is the FIRST
+        # 30-degree division past the meridian toward the east; +2 mod 12
+        # maps 11->30deg, 12->60deg, 2->120deg, 3->150deg.
+        step = 30.0 * ((k + 2) % 12)
+        if system == "R":
+            normal = _regiomontanus_normal(armc_deg, lat_deg, (armc_deg + step) % 360.0)
+        else:
+            normal = _campanus_normal(armc_deg, lat_deg, step)
+        if lo is None:
+            lo = cusps[11] if k == 12 else cusps[2]
+        cusps[k] = _ecliptic_point_on_plane(normal, obliquity_deg, lo, hi)
+    return cusps[11], cusps[12], cusps[2], cusps[3]
+
+
 def houses_armc(
     armc_deg: float,
     lat_deg: float,
@@ -81,8 +185,12 @@ def houses_armc(
     """Tropical cusps 1..12, Ascendant and MC from RAMC + latitude.
 
     Placidus (system 'P') iterates the classical pole-height construction;
-    equal ('E') and whole-sign ('W') are derived from Asc/MC without
-    iteration. Whole-sign places the Ascendant's sign as house 1.
+    Porphyry ('O') trisects the ecliptic quadrants; Regiomontanus ('R') and
+    Campanus ('C') are the horizon-circle systems built from the classical
+    constructions (equator / prime-vertical division through the horizon's
+    N/S points); Morinus ('M') divides right ascension into 30-degree
+    circles. Equal ('E') and whole-sign ('W') are derived from Asc/MC
+    without iteration. Whole-sign places the Ascendant's sign as house 1.
     """
     sine = math.sin(math.radians(obliquity_deg))
     cose = math.cos(math.radians(obliquity_deg))
@@ -126,6 +234,26 @@ def houses_armc(
         c2 = placidus_cusp((120.0 + armc_deg) % 360.0, 1.5, fh2)
         c3 = placidus_cusp((150.0 + armc_deg) % 360.0, 3.0, fh1)
         cusps[11], cusps[12], cusps[2], cusps[3] = c11, c12, c2, c3
+    elif system == "O":
+        ic_ = (mc + 180.0) % 360.0
+        q_east = (asc - mc) % 360.0
+        q_west = (ic_ - asc) % 360.0
+        cusps[11] = (mc + q_east / 3.0) % 360.0
+        cusps[12] = (mc + 2.0 * q_east / 3.0) % 360.0
+        cusps[2] = (asc + q_west / 3.0) % 360.0
+        cusps[3] = (asc + 2.0 * q_west / 3.0) % 360.0
+    elif system == "R" or system == "C":
+        c11, c12, c2, c3 = _circle_system_cusps(
+            armc_deg, lat_deg, obliquity_deg, mc, asc, system
+        )
+        cusps[11], cusps[12], cusps[2], cusps[3] = c11, c12, c2, c3
+    elif system == "M":
+        # Morinus: 30-degree RIGHT ASCENSION circles; house 10 sits on the
+        # meridian (RA = RAMC), house 1 at RAMC + 90.  Asc/MC are reported
+        # but do not anchor the cusps.
+        for i in range(1, 13):
+            cusps[i] = _asc1((armc_deg + 30.0 * ((i + 2) % 12)) % 360.0, 0.0, sine, cose)
+        return _finish(asc, mc, cusps, system)
     elif system == "E":
         for i in range(1, 13):
             cusps[i] = (asc + (i - 1) * 30.0) % 360.0
